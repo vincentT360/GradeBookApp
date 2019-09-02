@@ -84,7 +84,6 @@ class _ClassGradeScreenState extends State<ClassGradeScreen>{
 
   void _onPressedCreateClass(){
 
-    print("adding the class");
     setState(() { //setState needed so we redraw the widget
         _insertClassAsync(UserClasses(className: createClassController.text));
     });
@@ -95,7 +94,6 @@ class _ClassGradeScreenState extends State<ClassGradeScreen>{
   List<Widget> _renderColumnClasses(BuildContext context){
     //List of classes to build, pulled from database
     _getClassesAsync();
-    print("Am rending cards");
   
     List<Widget> columnChildren = [];
 
@@ -112,7 +110,7 @@ class _ClassGradeScreenState extends State<ClassGradeScreen>{
     return Card(
       child: Column(
         children: [
-          Row(children: [_renderRowTitle(index), _deleteButton(index)]),
+          Row(children: [_renderRowTitle(index), _deleteButton(index)], mainAxisAlignment: MainAxisAlignment.spaceBetween,),
         ],
 
       ),

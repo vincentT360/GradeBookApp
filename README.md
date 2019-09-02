@@ -1,16 +1,10 @@
-# gradebook
+# Gradebook
 
-A new Flutter project.
+A grade assistant app that helps users calculate what they need on their final and see their class grades in one convenient place.
 
-## Getting Started
+## Features
+1. Final Grade Calculator
+- Offers the ability to input their current grade, grade they want and final worth in order to see what they must score on the final to get the grade they want.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+2. Class Grade Calculator (In development)
+- Allows users to add classes and grades in one place and calculate class grades by giving weight amounts and current grades for those weights.

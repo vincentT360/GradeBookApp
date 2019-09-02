@@ -14,5 +14,6 @@ class Styles{
   static final listTitle = TextStyle(fontFamily: _defaultFont, fontSize: _textSizeLarge, color: _defaultColor);
   static final defaultText = TextStyle(fontFamily: _defaultFont, fontSize: _textSizeDefault, color: _defaultColor);
   static final popUpText = TextStyle(fontFamily: _defaultFont, fontSize: _textSizeMedium, color: _defaultColor);
+  static final classCardTitles = TextStyle(fontFamily: _defaultFont, fontSize: _textSizeHeader, color: _defaultColor);
 
 }

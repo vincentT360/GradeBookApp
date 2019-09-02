@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'styles.dart';
 import 'models/grade_tools.dart';
 import 'final_grade.dart';
+import 'class_grade.dart';
 
 //Home screen where users select what tool they want to use
 
@@ -53,6 +54,9 @@ class ToolSelect extends StatelessWidget{
 
     if (currentTool.toolName == 'Final Grade Calculator'){
       Navigator.push(context, MaterialPageRoute(builder: (context) => FinalGradeScreen(currentTool) ));
+    }
+    else if(currentTool.toolName == 'Class Grade Calculator'){
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ClassGradeScreen(currentTool)));
     }
 
   }

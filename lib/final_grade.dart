@@ -2,28 +2,6 @@ import 'package:flutter/material.dart';
 import 'models/grade_tools.dart';
 import 'styles.dart';
 
-//Handle code for final grade calculator screen 
-//How stateful widgets work
-
-//1. We create a class that extends statefulwidget
-//2. Create a subclass of State<YourWidget>
-//3. Doing so allows to crate the widget that is mutable and has a build method
-
-//Note: Need to call setstate() to redraw and update widget
-//So lets say we have an icon button with param onPressed:
-//We need onPressed to take a void callback function
-
-/* Example of using setState. onPressed must be a void callback
-   Suppose body belongs in scaffold
-
-body: IconButton(icon: Text("$counter"), onPressed: _onPress,),
-
-void _onPress() {
-  setState(() {counter++;});
-}
-
-*/
-
 
 class FinalGradeScreen extends StatefulWidget{
   final GradeTool currentTool;

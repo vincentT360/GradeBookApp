@@ -41,6 +41,7 @@ class _ClassGradeScreenState extends State<ClassGradeScreen>{
   _ClassGradeScreenState(this.currentTool);
 
   static TextEditingController createClassController = TextEditingController();
+  static TextEditingController currentGradeController = TextEditingController();
 
   final dbHelper = DatabaseHelper.instance;
   List<UserClasses> retrieved = [];
@@ -48,7 +49,6 @@ class _ClassGradeScreenState extends State<ClassGradeScreen>{
   @override
   Widget build(BuildContext context)
   {
-    //Retrieve any classes stored in database
     return Scaffold(
       appBar: AppBar(title: Text(currentTool.toolName, style: Styles.navBarHeader)),
       body: Column(children: _renderColumnClasses(context)),
@@ -74,24 +74,58 @@ class _ClassGradeScreenState extends State<ClassGradeScreen>{
   }
 
   List<Widget> _createClassAlertDialog()
-  {
+  { //Create the pop up to add a class
     return [
             Container(padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 10.0), child: Text("Create a Class", textAlign: TextAlign.center, style: Styles.popUpText,)),
-            Container(padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 25.0), child: TextField(controller: createClassController, style: Styles.defaultText, decoration: InputDecoration(hintText: "Class Name"))),
-            Container(child: RaisedButton(child: Text("Create"), onPressed: _onPressedCreateClass, ))
+            _createTextFieldForCreateClass(createClassController, "Class Name"),
+            _createTextFieldForCreateClass(currentGradeController, "Optional: Current Grade %"),
+            Container(child: RaisedButton(child: Text("Create"), onPressed: _onPressedCreateClass))
           ];
   }
 
-  void _onPressedCreateClass(){
-
-    setState(() { //setState needed so we redraw the widget
-        _insertClassAsync(UserClasses(className: createClassController.text));
-    });
-    createClassController.clear();
-
+  _createTextFieldForCreateClass(TextEditingController controller, String hintText)
+  { //Render the text fields to retrieve user input
+    return Container(padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 25.0), child: TextField(controller: controller, style: Styles.defaultText, decoration: InputDecoration(hintText: hintText)));
   }
 
-  List<Widget> _renderColumnClasses(BuildContext context){
+  void _onPressedCreateClass()
+  {
+    //Determine appropriate response when class is added such as any value in current grade.
+    if (currentGradeController.text != "")
+    {
+      try {
+        double classGrade = double.parse(currentGradeController.text);
+        setState(() { //setState needed so we redraw the widget
+          _insertClassAsync(UserClasses(className: createClassController.text, grade: classGrade));
+      });
+      } on FormatException {
+        _wrongGradeInputAlertDialog();
+      }
+    } else {
+      setState(() { //setState needed so we redraw the widget
+          _insertClassAsync(UserClasses(className: createClassController.text, grade: 0.0));
+      });
+    }
+
+    createClassController.clear();
+    currentGradeController.clear();
+  }
+
+  void _wrongGradeInputAlertDialog()
+  {//Display error message if wrong input for current grade received.
+    showDialog(
+      context: context, 
+      builder: (context) {
+        return AlertDialog(content: 
+          Column(children: [Text("Please enter a decimal number only, no other characters please!", style: Styles.defaultText)], mainAxisSize: MainAxisSize.min,
+          )
+        );
+        }
+      );
+  }
+
+  List<Widget> _renderColumnClasses(BuildContext context)
+  { //Render the column children which are the classes the user has
     //List of classes to build, pulled from database
     _getClassesAsync();
   
@@ -106,16 +140,27 @@ class _ClassGradeScreenState extends State<ClassGradeScreen>{
 
   }
   
-  Widget _addCard(int index){
+  Widget _addCard(int index)
+  {
+    //Add the actual card itself
     return Card(
       child: Column(
         children: [
           Row(children: [_renderRowTitle(index), _deleteButton(index)], mainAxisAlignment: MainAxisAlignment.spaceBetween,),
+          Row(children: [_renderGradeView(index), _renderEditButton(index)], mainAxisAlignment: MainAxisAlignment.spaceBetween,)
         ],
 
       ),
 
     );
+  }
+
+  Widget _renderEditButton(int index){
+    return FlatButton(child: Text("Edit", style: Styles.defaultText, textAlign: TextAlign.center), onPressed: () {});
+  }
+
+  Widget _renderGradeView(int index){
+    return Container(padding:EdgeInsets.fromLTRB(15.0, 0.0, 0.0, 0.0), child: Text("${retrieved[index].grade.toString()}%", style: Styles.gradeDisplay));
   }
 
   Widget _renderRowTitle(int index){
@@ -127,11 +172,10 @@ class _ClassGradeScreenState extends State<ClassGradeScreen>{
       setState(() {
         _deleteClassAsync(index);
       });
-      //_deleteClassAsync(index);
     },);
   }
   
-
+  //Code below is the code used to insert data into the SQLite database
   void _insertClassAsync(UserClasses classToAdd) async {
     print("adding classes");
     await dbHelper.insertClass(classToAdd);
